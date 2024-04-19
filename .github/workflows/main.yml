@@ -1,8 +1,25 @@
-- name: Count Lines of Code (cloc)
-  # You may pin to the exact commit or the version.
-  # uses: djdefi/cloc-action@d4a7e15e4ff5219692f79ba71685af08955dcfc0
-  uses: djdefi/cloc-action@6
-  with:
-    # Additional options to pass to cloc
-    options: # optional, default is 
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: Calculate Lines of Code
+        id: loc
+        uses: PavanMudigonda/lines-of-code-reporter@v1.6
+        with:
+          directory: "src,test,utils"               #Optional #Comma Seperated
+          include_lang: "JavaScript,TypeScript"     #Optional # Comma Seperated
+          exclude_lang: "PowerShell,Shell,Go"       #Optional # Comma Seperated
+          exclude_dir: "node_modules,.github"       #Optional # Comma Seperated
+
+      # Publish Lines of Code Summary  # Optional
+     - name: Add Lines of Code Summary
+       run: echo "${{ steps.loc.outputs.lines-of-code-summary }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: print output # Optional
+        shell: pwsh
+        run: | 
+          Write-Host 'Total Lines of Code...:  ${{ steps.loc.outputs.total_lines }}'
+          Write-Host 'Lines of Code Markdown Report Path...:  ${{ steps.loc.outputs.loc_report }}' 
+                    
           
